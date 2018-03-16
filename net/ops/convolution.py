@@ -85,7 +85,7 @@ class convolutional(BaseOp):
                 'updates_collections' : None,
                 'is_training': layer.h['is_training']
                 })
-            v = tf.__version__.split('.')[1]
+            #v = tf.__version__.split('.')[1]
             #if int(v) < 12: key = 'initializers'
             #else:
             key = 'param_initializers'
