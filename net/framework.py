@@ -5,12 +5,12 @@ from . import vanilla
 class framework(object):
     constructor = vanilla.constructor
     loss = vanilla.train.loss
-    
+
     def __init__(self, meta, FLAGS):
         model = meta['model'].split('/')[-1]
         model = '.'.join(model.split('.')[:-1])
         meta['name'] = model
-        
+
         self.constructor(meta, FLAGS)
 
     def is_inp(self):

@@ -22,10 +22,11 @@ flags.DEFINE_float("gpu", 0.0, "how much gpu (from 0.0 to 1.0)")
 flags.DEFINE_float("lr", 1e-5, "learning rate")
 flags.DEFINE_integer("keep",20,"Number of most recent training results to save")
 flags.DEFINE_integer("batch", 48, "batch size")
-flags.DEFINE_integer("epoch", 1000, "number of epoch")
+flags.DEFINE_integer("epoch", 10, "number of epoch")
 flags.DEFINE_integer("save", 2000, "save checkpoint every ? training examples")
 flags.DEFINE_string("demo", '', "demo on webcam")
 flags.DEFINE_boolean("profile", False, "profile")
+flags.DEFINE_boolean("json",True,"To output json")
 FLAGS = flags.FLAGS
 
 # make sure all necessary dirs exist

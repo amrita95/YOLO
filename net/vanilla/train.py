@@ -6,14 +6,14 @@ _LOSS_TYPE = ['sse','l2', 'smooth',
 
 def loss(self, net_out):
 	m = self.meta
-	loss_type = self.meta['type']
+	loss_type = 'l2' #self.meta['type']
 	assert loss_type in _LOSS_TYPE, \
 	'Loss type {} not implemented'.format(loss_type)
 
 	out = net_out
 	out_shape = out.get_shape()
 	out_dtype = out.dtype.base_dtype
-	_truth = tf.placeholders(out_dtype, out_shape)
+	_truth = tf.placeholder(out_dtype, out_shape)
 
 	self.placeholders = dict({
 			'truth': _truth

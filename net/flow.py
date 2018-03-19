@@ -18,7 +18,7 @@ def _save_ckpt(self, step, loss_profile):
 
     profile = file.format(model, step, '.profile')
     profile = os.path.join(self.FLAGS.backup, profile)
-    with open(profile, 'wb') as profile_ckpt: 
+    with open(profile, 'wb') as profile_ckpt:
         pickle.dump(loss_profile, profile_ckpt)
 
     ckpt = file.format(model, step, '')
@@ -41,12 +41,12 @@ def train(self):
         ))
 
         feed_dict = {
-            loss_ph[key]: datum[key] 
+            loss_ph[key]: datum[key]
                 for key in loss_ph }
         feed_dict[self.inp] = x_batch
         feed_dict.update(self.feed)
 
-        fetches = [self.train_op, loss_op] 
+        fetches = [self.train_op, loss_op]
         fetched = self.sess.run(fetches, feed_dict)
         loss = fetched[1]
 
@@ -87,7 +87,7 @@ def predict(self):
         all_inp = new_all
 
         feed_dict = {self.inp : np.concatenate(inp_feed, 0)}
-    
+
         self.say('Forwarding {} inputs ...'.format(len(inp_feed)))
         start = time.time()
         out = self.sess.run(self.out, feed_dict)

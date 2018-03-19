@@ -15,18 +15,22 @@ def parse(self, exclusive = False):
     """
     meta = self.meta
     ext = '.parsed'
-    history = os.path.join('net', 'yolo', 'parse-history.txt');
+    history = os.path.join('net', 'yolo', 'parse-history.txt')
+
     if not os.path.isfile(history):
         file = open(history, 'w')
         file.close()
+
     with open(history, 'r') as f:
         lines = f.readlines()
+
     for line in lines:
         line = line.strip().split(' ')
         labels = line[1:]
         if labels == meta['labels']:
             if os.path.isfile(line[0]):
                 with open(line[0], 'rb') as f:
+
                     return pickle.load(f, encoding = 'latin1')[0]
                     #return pickle.load(f)[0]
 
@@ -110,7 +114,7 @@ def _batch(self, chunk):
     # Finalise the placeholders' values
     upleft   = np.expand_dims(prear[:,0:2], 1)
     botright = np.expand_dims(prear[:,2:4], 1)
-    wh = botright - upleft; 
+    wh = botright - upleft
     area = wh[:,:,0] * wh[:,:,1]
     upleft   = np.concatenate([upleft] * B, 1)
     botright = np.concatenate([botright] * B, 1)
@@ -132,7 +136,6 @@ def shuffle(self):
     batch = self.FLAGS.batch
     data = self.parse()
     size = len(data)
-
     print('Dataset of {} instance(s)'.format(size))
     if batch > size: self.FLAGS.batch = batch = size
     batch_per_epoch = int(size / batch)
