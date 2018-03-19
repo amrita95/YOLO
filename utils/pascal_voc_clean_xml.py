@@ -13,7 +13,7 @@ def pascal_voc_clean_xml(ANN, pick, exclusive = False):
 		for i in l: print('{}: {}'.format(i,l[i]))
 
 	def parse(line): # exclude the xml tag
-		x = line.decode().split('>')[1].decode().split('<')[0]
+		x = line.split('>')[1].split('<')[0]
 		try: r = int(x)
 		except: r = x
 		return r

@@ -25,7 +25,7 @@ def box_intersection(a, b):
     return area;
 
 def box_union(a, b):
-    i = box_intersection(a, b);
+    i = box_intersection(a, b); 
     u = a.w * a.h + b.w * b.h - i;
     return u;
 

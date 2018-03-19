@@ -3,6 +3,7 @@ from utils.box import BoundBox, box_iou, prob_compare
 import numpy as np
 import cv2
 import os
+import json
 
 def _fix(obj, dims, scale, offs):
 	for i in range(1, 5):
@@ -16,12 +17,14 @@ def preprocess(self, im, allobj = None):
 	Takes an image, return it as a numpy tensor that is readily
 	to be fed into tfnet. If there is an accompanied annotation (allobj),
 	meaning this preprocessing is serving the train process, then this
-	image will be transformed with random noise to augment training data, 
-	using scale, translation, flipping and recolor. The accompanied 
+	image will be transformed with random noise to augment training data,
+	using scale, translation, flipping and recolor. The accompanied
 	parsed annotation (allobj) will also be modified accordingly.
-	"""	
+	"""
+
 	if type(im) is not np.ndarray:
 		im = cv2.imread(im)
+
 
 	if allobj is not None: # in training mode
 		result = imcv2_affine_trans(im)
@@ -41,7 +44,7 @@ def preprocess(self, im, allobj = None):
 	imsz = imsz[:,:,::-1]
 	if allobj is None: return imsz
 	return imsz#, np.array(im) # for unit testing
-	
+
 _thresh = dict({
 	'person': .2,
 	'pottedplant': .1,
@@ -53,6 +56,7 @@ def postprocess(self, net_out, im, save = True):
 	"""
 	Takes net output, draw predictions, save to disk
 	"""
+
 	meta, FLAGS = self.meta, self.FLAGS
 	threshold, sqrt = FLAGS.threshold, meta['sqrt'] + 1
 	C, B, S = meta['classes'], meta['num'], meta['side']
@@ -99,7 +103,11 @@ def postprocess(self, net_out, im, save = True):
 		imgcv = cv2.imread(im)
 	else: imgcv = im
 	h, w, _ = imgcv.shape
+
+	resultsForJSON = []
+
 	for b in boxes:
+
 		max_indx = np.argmax(b.probs)
 		max_prob = b.probs[max_indx]
 		label = self.meta['labels'][max_indx]
@@ -113,16 +121,35 @@ def postprocess(self, net_out, im, save = True):
 			if top   < 0    :   top = 0
 			if bot   > h - 1:   bot = h - 1
 			thick = int( (h + w) // 150)
-			cv2.rectangle(imgcv, 
-				(left, top), (right, bot), 
+			cv2.rectangle(imgcv,
+				(left, top), (right, bot),
 				self.meta['colors'][max_indx], thick)
+
 			mess = '{}'.format(label)
+
+
 			cv2.putText(
-				imgcv, mess, (left, top - 12), 
+				imgcv, mess, (left, top - 12),
 				0, 1e-3 * h, self.meta['colors'][max_indx],
 				thick // 3)
 
+			if self.FLAGS.json:
+				resultsForJSON.append({"label": mess, "confidence": float('%.2f' % max_prob), "topleft": {"x": left, "y": top}, "bottomright": {"x": right, "y": bot}})
+				continue
+
 	if not save: return imgcv
-	outfolder = os.path.join(FLAGS.test, 'out') 
+
+	print(resultsForJSON)
+
+	outfolder = os.path.join(FLAGS.test, 'out')
 	img_name = os.path.join(outfolder, im.split('/')[-1])
 	cv2.imwrite(img_name, imgcv)
+
+
+	if self.FLAGS.json:
+
+		textJSON = json.dumps(resultsForJSON)
+		textFile = os.path.splitext(img_name)[0] + ".json"
+		with open(textFile, 'w') as f:
+			f.write(textJSON)
+		return
