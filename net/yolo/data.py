@@ -56,6 +56,7 @@ def parse(self, exclusive = False):
         f.write(' '.join(meta['labels']))
         f.write('\n')
     print('Result saved to {}'.format(save_to))
+    print(dumps[0:1])
     return dumps
 
 

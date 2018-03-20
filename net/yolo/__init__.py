@@ -18,6 +18,7 @@ def constructor(self, meta, FLAGS):
 		return (b * 127, r * 127, g * 127)
 
 	misc.labels(meta)
+	print(meta['labels'],meta['classes'])
 	assert len(meta['labels']) == meta['classes'], (
 		'labels.txt and {} indicate' + ' '
 		'inconsistent class numbers'

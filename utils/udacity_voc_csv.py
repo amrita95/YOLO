@@ -6,9 +6,9 @@ import os
 import sys
 import csv
 import cv2
-
+import numpy as np
 def udacity_voc_csv(ANN, pick, exclusive = False):
-
+    print("hello", ANN)
     print('Parsing for {} {}'.format(
         pick, 'exclusively' * int(exclusive)))
     def pp(l): # pretty printing 
@@ -25,7 +25,7 @@ def udacity_voc_csv(ANN, pick, exclusive = False):
     
     dumps = list()
 
-    csv_fname = os.path.join('/home/yan/data/udacity_data/udacity.csv')
+    csv_fname = os.path.join('/home/amrita95/PycharmProjects/darkflow2/udacity.csv')
     with open(csv_fname, 'r') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=' ', quotechar='|', )
         for row in spamreader:
@@ -63,5 +63,4 @@ def udacity_voc_csv(ANN, pick, exclusive = False):
     print('Statistics:')
     pp(stat)
     print('Dataset size: {}'.format(len(dumps)))
-    
     return dumps
