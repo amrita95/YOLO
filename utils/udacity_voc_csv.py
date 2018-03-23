@@ -7,8 +7,8 @@ import sys
 import csv
 import cv2
 import numpy as np
+import glob
 def udacity_voc_csv(ANN, pick, exclusive = False):
-    print("hello", ANN)
     print('Parsing for {} {}'.format(
         pick, 'exclusively' * int(exclusive)))
     def pp(l): # pretty printing 
@@ -24,12 +24,17 @@ def udacity_voc_csv(ANN, pick, exclusive = False):
         return int(float(literal))
     
     dumps = list()
+    files =[i.split('/')[-1] for i in list(glob.glob(os.path.join('/home/amrita95/PycharmProjects/darkflow2/object-small','*.jpg')))]
 
     csv_fname = os.path.join('/home/amrita95/PycharmProjects/darkflow2/udacity.csv')
     with open(csv_fname, 'r') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=' ', quotechar='|', )
         for row in spamreader:
             img_name = row[0]
+
+            #if img_name not in files:
+             #   continue
+
             w = 1920
             h = 1200
       

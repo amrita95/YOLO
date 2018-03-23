@@ -148,7 +148,8 @@ def postprocess(self, net_out, im, save = True):
 	jpe,total,proposals,correct,avg_iou,recall,precision =new_KPI(test1,pred_bundle)
 	print("Img: %s\tTotal: %d\tProposals: %d\tCorrect: %d\tAvgIOU: %f\tRecall: %f\tPrecision: %f" %(jpe,total,proposals,correct,avg_iou,recall,precision))
 
-	#print(resultsForJSON)
+	print(resultsForJSON)
+
 
 	outfolder = os.path.join(FLAGS.test, 'out')
 	img_name = os.path.join(outfolder, im.split('/')[-1])

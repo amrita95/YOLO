@@ -33,7 +33,6 @@ def postprocess(self, net_out, im, save = True):
 	C, B = meta['classes'], meta['num']
 	anchors = meta['anchors']
 	net_out = net_out.reshape([H, W, B, -1])
-
 	boxes = list()
 	for row in range(H):
 		for col in range(W):
@@ -60,9 +59,8 @@ def postprocess(self, net_out, im, save = True):
 			if boxi.probs[c] == 0: continue
 			for j in range(i + 1, len(boxes)):
 				boxj = boxes[j]
-				if box_iou(boxi, boxj) >= .4:
+				if box_iou(boxi, boxj) >= .3:
 					boxes[j].probs[c] = 0.
-
 
 	colors = meta['colors']
 	labels = meta['labels']
@@ -108,8 +106,10 @@ def postprocess(self, net_out, im, save = True):
 	pred_bundle = [name_img,pred]
 
 	test1 = get_all_test()
+
 	jpe,total,proposals,correct,avg_iou,recall,precision =new_KPI(test1,pred_bundle)
-	print("Img: %s\tTotal: %d\tProposals: %d\tCorrect: %d\tAvgIOU: %f\tRecall: %f\tPrecision: %f" %(jpe,total,proposals,correct,avg_iou,recall,precision))
+	if self.FLAGS.kpi:
+		print("Img: %s\tTotal: %d\tProposals: %d\tCorrect: %d\tAvgIOU: %f\tRecall: %f\tPrecision: %f" %(jpe,total,proposals,correct,avg_iou,recall,precision))
 
 	if not save: return imgcv
 	outfolder = os.path.join(self.FLAGS.test, 'out')

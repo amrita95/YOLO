@@ -28,6 +28,7 @@ flags.DEFINE_integer("save", 1000, "save checkpoint every ? training examples")
 flags.DEFINE_string("demo", '', "demo on webcam")
 flags.DEFINE_boolean("profile", False, "profile")
 flags.DEFINE_boolean("json",True,"To output json")
+flags.DEFINE_boolean("kpi",False,'To output new KPIs')
 FLAGS = flags.FLAGS
 
 # make sure all necessary dirs exist

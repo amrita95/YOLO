@@ -56,7 +56,6 @@ def union(list1,list2):
     return union
 
 def new_KPI(tests_bundle,pred_bundle):
-    print(len(tests_bundle),len(pred_bundle))
     for img in tests_bundle:
         precision=0
         recall =0
