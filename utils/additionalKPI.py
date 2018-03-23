@@ -3,6 +3,7 @@ import os
 import glob
 
 def get_all_test():
+
     files =[i.split('/')[-1] for i in list(glob.glob(os.path.join('/home/amrita95/PycharmProjects/darkflow2/test','*.jpg')))]
     
     bundle =[]
@@ -25,6 +26,7 @@ def get_all_test():
                 class_idx = int(labels[i + 4])
                 all += [[class_idx,xmin, ymin, xmax, ymax]]
             bundle += [[img_name,  all]]
+
     return bundle
     
 def cal_iou(list1,list2):
@@ -54,7 +56,7 @@ def union(list1,list2):
     return union
 
 def new_KPI(tests_bundle,pred_bundle):
-
+    print(len(tests_bundle),len(pred_bundle))
     for img in tests_bundle:
         precision=0
         recall =0
@@ -63,6 +65,7 @@ def new_KPI(tests_bundle,pred_bundle):
             proposals = len(pred_bundle[1])
             avg_iou =0
             correct=0
+
             for pred in pred_bundle[1]:
                 best_iou = 0
 

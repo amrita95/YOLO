@@ -4,6 +4,7 @@ import numpy as np
 import cv2
 import os
 import json
+from utils.additionalKPI import *
 
 def _fix(obj, dims, scale, offs):
 	for i in range(1, 5):
@@ -96,7 +97,7 @@ def postprocess(self, net_out, im, save = True):
 			if boxi.probs[c] == 0: continue
 			for j in range(i + 1, len(boxes)):
 				boxj = boxes[j]
-				if box_iou(boxi, boxj) >= .4:
+				if box_iou(boxi, boxj) >= .3:
 						boxes[j].probs[c] = 0.
 
 	if type(im) is not np.ndarray:
@@ -105,12 +106,14 @@ def postprocess(self, net_out, im, save = True):
 	h, w, _ = imgcv.shape
 
 	resultsForJSON = []
+	name_img = im.split('/')[-1]
 
+	pred = []
 	for b in boxes:
 		max_indx = np.argmax(b.probs)
 		max_prob = b.probs[max_indx]
 		label = self.meta['labels'][max_indx]
-		if max_prob > _thresh.get(label,threshold):
+		if max_prob > _thresh.get(label,0.0001):
 			left  = int ((b.x - b.w/2.) * w)
 			right = int ((b.x + b.w/2.) * w)
 			top   = int ((b.y - b.h/2.) * h)
@@ -119,12 +122,13 @@ def postprocess(self, net_out, im, save = True):
 			if right > w - 1: right = w - 1
 			if top   < 0    :   top = 0
 			if bot   > h - 1:   bot = h - 1
-			thick = int( (h + w) // 150)
+			thick = int( (h + w) // 300)
 			cv2.rectangle(imgcv,
 				(left, top), (right, bot),
 				self.meta['colors'][max_indx], thick)
 
 			mess = '{}'.format(label)
+			pred += [[max_indx,left,top,right,bot]]
 
 
 			cv2.putText(
@@ -138,7 +142,13 @@ def postprocess(self, net_out, im, save = True):
 
 	if not save: return imgcv
 
-	print(resultsForJSON)
+	pred_bundle = [name_img,pred]
+
+	test1 = get_all_test()
+	jpe,total,proposals,correct,avg_iou,recall,precision =new_KPI(test1,pred_bundle)
+	print("Img: %s\tTotal: %d\tProposals: %d\tCorrect: %d\tAvgIOU: %f\tRecall: %f\tPrecision: %f" %(jpe,total,proposals,correct,avg_iou,recall,precision))
+
+	#print(resultsForJSON)
 
 	outfolder = os.path.join(FLAGS.test, 'out')
 	img_name = os.path.join(outfolder, im.split('/')[-1])

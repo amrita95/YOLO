@@ -47,12 +47,19 @@ def train(self):
         feed_dict.update(self.feed)
 
         fetches = [self.train_op, loss_op]
+
+        if self.FLAGS.summary:
+            fetches.append(self.summary_op)
+
         fetched = self.sess.run(fetches, feed_dict)
         loss = fetched[1]
 
         if loss_mva is None: loss_mva = loss
         loss_mva = .9 * loss_mva + .1 * loss
         step_now = self.FLAGS.load + i + 1
+
+        if self.FLAGS.summary:
+            self.writer.add_summary(fetched[2], step_now)
 
         form = 'step {} - loss {} - moving ave loss {}'
         self.say(form.format(step_now, loss, loss_mva))
